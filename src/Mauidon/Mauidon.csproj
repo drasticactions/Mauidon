@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Drastic.Utilities" Version="1.0.10" />
+		<PackageReference Include="Mastonet" Version="2.2.0" />
+	</ItemGroup>
+
+</Project>

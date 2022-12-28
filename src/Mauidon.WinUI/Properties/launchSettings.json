@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Mauidon.WinUI (Package)": {
+      "commandName": "MsixPackage"
+    }
+  }
+}
