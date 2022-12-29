@@ -1,5 +1,10 @@
+// <copyright file="Main.cs" company="Drastic Actions">
+// Copyright (c) Drastic Actions. All rights reserved.
+// </copyright>
+
 using Mauidon.MacOS;
 
 // This is the main entry point of the application.
-NSApplication.Init ();
-NSApplication.Main (args);
+NSApplication.Init();
+NSApplication.SharedApplication.Delegate = new AppDelegate();
+NSApplication.Main(args);
