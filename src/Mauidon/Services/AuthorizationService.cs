@@ -12,16 +12,20 @@ namespace Mauidon.Services
     /// </summary>
     public class AuthorizationService : IAuthorizationService
     {
-        private readonly string redirectUrl = "mauidon://";
+        private string redirectUrl;
 
         private string hostUrl = string.Empty;
         private AppRegistration? appRegistration;
         private AuthenticationClient? authClient;
         private IBrowserService browserService;
 
-        public AuthorizationService(IBrowserService browserService)
+        /// <inheritdoc/>
+        public bool IsCodeAuth => this.redirectUrl == "urn:ietf:wg:oauth:2.0:oob";
+
+        public AuthorizationService(IBrowserService browserService, string redirectUri = "urn:ietf:wg:oauth:2.0:oob")
         {
             this.browserService = browserService;
+            this.redirectUrl = redirectUri;
         }
 
         /// <inheritdoc/>

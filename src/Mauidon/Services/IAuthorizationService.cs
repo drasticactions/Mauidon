@@ -25,5 +25,10 @@ namespace Mauidon.Services
         /// <param name="code">Code to Login.</param>
         /// <returns><see cref="Task"/>.</returns>
         public Task<(MastodonClient Client, Account Account)> LoginWithCodeAsync(string code);
+
+        /// <summary>
+        /// Gets a value indicating if the user needs to copy a code.
+        /// </summary>
+        public bool IsCodeAuth { get; }
     }
 }

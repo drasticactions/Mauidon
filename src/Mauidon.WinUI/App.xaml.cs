@@ -1,14 +1,15 @@
-﻿// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
+﻿// <copyright file="App.xaml.cs" company="Drastic Actions">
+// Copyright (c) Drastic Actions. All rights reserved.
+// </copyright>
 
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Drastic.Services;
+using Mastonet;
+using Mauidon.Services;
+using Mauidon.ViewModels;
 using Mauidon.WinUI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace Mauidon.WinUI
 {
@@ -17,10 +18,6 @@ namespace Mauidon.WinUI
     /// </summary>
     public partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
         public App()
         {
             this.InitializeComponent();
@@ -29,6 +26,9 @@ namespace Mauidon.WinUI
              new ServiceCollection()
              .AddSingleton<IAppDispatcher>(new AppDispatcher(dispatcherQueue))
              .AddSingleton<IErrorHandlerService, ErrorHandlerService>()
+             .AddSingleton<IBrowserService, BrowserService>()
+             .AddSingleton<IAuthorizationService, AuthorizationService>()
+             .AddTransient<LoginViewModel>()
              .BuildServiceProvider());
         }
 
@@ -38,7 +38,7 @@ namespace Mauidon.WinUI
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
+            m_window = new BaseWindow(new LoginPage());
             m_window.Activate();
         }
 

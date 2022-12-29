@@ -31,6 +31,10 @@
 		<DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="BaseWindow.xaml" />
+	  <None Remove="LoginPage.xaml" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Content Include="Assets\LargeTile.scale-100.png" />
 	  <Content Include="Assets\LargeTile.scale-125.png" />
 	  <Content Include="Assets\LargeTile.scale-150.png" />
@@ -115,6 +119,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0-preview2" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 		<PackageReference Include="WinUIEx" Version="2.0.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221109.1" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
@@ -131,6 +136,16 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Mauidon\Mauidon.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="BaseWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<!-- 

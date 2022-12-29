@@ -3,6 +3,7 @@
 // </copyright>
 
 using Mastonet;
+using Mauidon.Services;
 
 namespace Mauidon.ViewModels
 {
@@ -11,12 +12,12 @@ namespace Mauidon.ViewModels
         public MauidonBaseViewModel(IServiceProvider services)
             : base(services)
         {
-            this.Client = services.GetService(typeof(MastodonClient)) as MastodonClient ?? throw new NullReferenceException(nameof(MastodonClient));
+            this.Authorization = services.GetService(typeof(IAuthorizationService)) as IAuthorizationService ?? throw new NullReferenceException(nameof(IAuthorizationService));
         }
 
         /// <summary>
-        /// Gets the <see cref="MastodonClient"/>.
+        /// Gets the <see cref="IAuthorizationService"/>.
         /// </summary>
-        internal MastodonClient Client { get; }
+        internal IAuthorizationService Authorization { get; }
     }
 }
