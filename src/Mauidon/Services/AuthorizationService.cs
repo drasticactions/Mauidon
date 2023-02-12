@@ -46,6 +46,14 @@ namespace Mauidon.Services
             return (client, account);
         }
 
+        /// <inheritdoc/>
+        public async Task<MastodonClient> GenerateDefaultClientAsync()
+        {
+            var initAuthClient = new AuthenticationClient("mastodon.social");
+            var test = await initAuthClient.CreateApp("Mauidon", Scope.Read);
+            return new MastodonClient(test.Instance, string.Empty);
+        }
+
         private async Task<AppRegistration> GetAppRegistrationAsync(string serverBase)
         {
             Uri.TryCreate(serverBase, UriKind.RelativeOrAbsolute, out Uri? serverBaseUri);

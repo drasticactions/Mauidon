@@ -13,6 +13,11 @@ namespace Mauidon.Services
     public interface IAuthorizationService
     {
         /// <summary>
+        /// Gets a value indicating if the user needs to copy a code.
+        /// </summary>
+        public bool IsCodeAuth { get; }
+
+        /// <summary>
         /// Setup Login for Mastodon.
         /// </summary>
         /// <param name="serverBase">The base server login.</param>
@@ -27,8 +32,9 @@ namespace Mauidon.Services
         public Task<(MastodonClient Client, Account Account)> LoginWithCodeAsync(string code);
 
         /// <summary>
-        /// Gets a value indicating if the user needs to copy a code.
+        /// Generates the default client.
         /// </summary>
-        public bool IsCodeAuth { get; }
+        /// <returns>Mastodon Client.</returns>
+        public Task<MastodonClient> GenerateDefaultClientAsync();
     }
 }
