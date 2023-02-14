@@ -2,15 +2,17 @@
 // Copyright (c) Drastic Actions. All rights reserved.
 // </copyright>
 
+using Drastic.Tools;
 using Mastonet;
 using Mastonet.Entities;
+using Mauidon.Models;
 
 namespace Mauidon.Services
 {
     /// <summary>
     /// Authorization Service.
     /// </summary>
-    public class AuthorizationService : IAuthorizationService
+    public class AuthorizationService
     {
         private string redirectUrl;
 
@@ -18,17 +20,31 @@ namespace Mauidon.Services
         private AppRegistration? appRegistration;
         private AuthenticationClient? authClient;
         private IBrowserService browserService;
+        private DatabaseContext databaseContext;
 
-        public AuthorizationService(IBrowserService browserService, string redirectUri = "urn:ietf:wg:oauth:2.0:oob")
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizationService"/> class.
+        /// </summary>
+        /// <param name="database">Database Context.</param>
+        /// <param name="browserService">Browser Service.</param>
+        /// <param name="redirectUri">Redirect URL.</param>
+        public AuthorizationService(DatabaseContext database, IBrowserService browserService, string redirectUri = "urn:ietf:wg:oauth:2.0:oob")
         {
+            this.databaseContext = database;
             this.browserService = browserService;
             this.redirectUrl = redirectUri;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets a value indicating whether gets a value indicating if the user needs to copy a code.
+        /// </summary>
         public bool IsCodeAuth => this.redirectUrl == "urn:ietf:wg:oauth:2.0:oob";
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Setup Login for Mastodon.
+        /// </summary>
+        /// <param name="serverBase">The base server login.</param>
+        /// <returns><see cref="Task"/>.</returns>
         public async Task SetupLogin(string serverBase)
         {
             this.appRegistration = await this.GetAppRegistrationAsync(serverBase);
@@ -37,21 +53,48 @@ namespace Mauidon.Services
             await this.browserService.OpenAsync(oauthUrl);
         }
 
-        /// <inheritdoc/>
-        public async Task<(MastodonClient Client, Account Account)> LoginWithCodeAsync(string code)
+        /// <summary>
+        /// Login with Mastodon OAuth Code.
+        /// </summary>
+        /// <param name="code">Code to Login.</param>
+        /// <returns><see cref="Task"/>.</returns>
+        public async Task<MauidonClient> LoginWithCodeAsync(string code)
         {
-            var auth = await this.authClient!.ConnectWithCode(code, this.redirectUrl);
+            Auth? auth = await this.authClient!.ConnectWithCode(code, this.redirectUrl);
             var client = new MastodonClient(this.appRegistration!.Instance, auth.AccessToken);
             var account = await client.GetCurrentUser();
-            return (client, account);
+            var mauidonAccount = this.databaseContext.MauidonAccounts!.FirstOrDefault(n => n.AccountName == account.AccountName) ?? new MauidonAccount();
+            mauidonAccount.Update(account, auth);
+            this.databaseContext.AddOrUpdateMauidonAccount(mauidonAccount).FireAndForgetSafeAsync();
+            return new MauidonClient(client, mauidonAccount);
         }
 
-        /// <inheritdoc/>
-        public async Task<MastodonClient> GenerateDefaultClientAsync()
+        /// <summary>
+        /// Gets the default client async.
+        /// </summary>
+        /// <returns>MauidonClient.</returns>
+        public async Task<MauidonClient> GetDefaultClientAsync()
+        {
+            var account = this.databaseContext.MauidonAccounts!.FirstOrDefault(n => n.IsDefault);
+            if (account is null)
+            {
+                return await this.GetDefaultClientAsync();
+            }
+
+            var client = new MastodonClient(account.Instance, account.AccessToken);
+
+            return new MauidonClient(client, account);
+        }
+
+        /// <summary>
+        /// Generates the default client.
+        /// </summary>
+        /// <returns>Mastodon Client.</returns>
+        public async Task<MauidonClient> GenerateDefaultClientAsync()
         {
             var initAuthClient = new AuthenticationClient("mastodon.social");
             var test = await initAuthClient.CreateApp("Mauidon", Scope.Read);
-            return new MastodonClient(test.Instance, string.Empty);
+            return new MauidonClient(new MastodonClient(test.Instance, string.Empty));
         }
 
         private async Task<AppRegistration> GetAppRegistrationAsync(string serverBase)

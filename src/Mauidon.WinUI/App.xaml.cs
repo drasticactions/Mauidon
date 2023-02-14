@@ -36,7 +36,7 @@ namespace Mauidon.WinUI
              .AddSingleton<IAppDispatcher>(new AppDispatcher(dispatcherQueue))
              .AddSingleton<IErrorHandlerService, ErrorHandlerService>()
              .AddSingleton<IBrowserService, BrowserService>()
-             .AddSingleton<IAuthorizationService, AuthorizationService>()
+             .AddSingleton<AuthorizationService>()
              .AddSingleton<DatabaseContext>(new DatabaseContext(databaseField))
              .AddSingleton<WindowsPlatformService>()
              .AddSingleton<WindowService>()

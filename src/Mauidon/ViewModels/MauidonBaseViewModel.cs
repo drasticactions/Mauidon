@@ -12,12 +12,12 @@ namespace Mauidon.ViewModels
         public MauidonBaseViewModel(IServiceProvider services)
             : base(services)
         {
-            this.Authorization = services.GetService(typeof(IAuthorizationService)) as IAuthorizationService ?? throw new NullReferenceException(nameof(IAuthorizationService));
+            this.Authorization = services.GetService(typeof(AuthorizationService)) as AuthorizationService ?? throw new NullReferenceException(nameof(AuthorizationService));
         }
 
         /// <summary>
         /// Gets the <see cref="IAuthorizationService"/>.
         /// </summary>
-        internal IAuthorizationService Authorization { get; }
+        internal AuthorizationService Authorization { get; }
     }
 }

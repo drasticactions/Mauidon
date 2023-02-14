@@ -39,6 +39,30 @@ namespace Mauidon.Services
         public DbSet<AppSettings>? AppSettings { get; set; }
 
         /// <summary>
+        /// Gets or sets the Mauidon Accounts.
+        /// </summary>
+        public DbSet<MauidonAccount>? MauidonAccounts { get; set; }
+
+        /// <summary>
+        /// Add or update Mauidon Account.
+        /// </summary>
+        /// <param name="account">Mastodon Account.</param>
+        /// <returns>Number of rows changed.</returns>
+        public async Task<int> AddOrUpdateMauidonAccount(MauidonAccount account)
+        {
+            if (account.Id <= 0)
+            {
+                await this.MauidonAccounts!.AddAsync(account);
+            }
+            else
+            {
+                this.MauidonAccounts!.Update(account);
+            }
+
+            return await this.SaveChangesAsync();
+        }
+
+        /// <summary>
         /// Run when configuring the database.
         /// </summary>
         /// <param name="optionsBuilder"><see cref="DbContextOptionsBuilder"/>.</param>
@@ -60,6 +84,7 @@ namespace Mauidon.Services
             }
 
             modelBuilder.Entity<AppSettings>().HasKey(n => n.Id);
+            modelBuilder.Entity<MauidonAccount>().HasKey(n => n.Id);
         }
     }
 }
