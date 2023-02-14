@@ -13,7 +13,7 @@ namespace Mauidon.Services
     public interface IAuthorizationService
     {
         /// <summary>
-        /// Gets a value indicating if the user needs to copy a code.
+        /// Gets a value indicating whether gets a value indicating if the user needs to copy a code.
         /// </summary>
         public bool IsCodeAuth { get; }
 

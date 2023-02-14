@@ -19,14 +19,14 @@ namespace Mauidon.Services
         private AuthenticationClient? authClient;
         private IBrowserService browserService;
 
-        /// <inheritdoc/>
-        public bool IsCodeAuth => this.redirectUrl == "urn:ietf:wg:oauth:2.0:oob";
-
         public AuthorizationService(IBrowserService browserService, string redirectUri = "urn:ietf:wg:oauth:2.0:oob")
         {
             this.browserService = browserService;
             this.redirectUrl = redirectUri;
         }
+
+        /// <inheritdoc/>
+        public bool IsCodeAuth => this.redirectUrl == "urn:ietf:wg:oauth:2.0:oob";
 
         /// <inheritdoc/>
         public async Task SetupLogin(string serverBase)

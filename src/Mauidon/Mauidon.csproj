@@ -13,7 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Drastic.Utilities" Version="1.0.10" />
 		<PackageReference Include="Mastonet" Version="2.2.0" />
 	</ItemGroup>
 

@@ -12,11 +12,11 @@ namespace Mauidon.ViewModels
         public LoginViewModel(IServiceProvider services)
             : base(services)
         {
-             this.StartLoginCommand = new AsyncCommand(
-                async () => await this.ExecuteStartLoginCommand(),
-                () => !string.IsNullOrEmpty(this.ServerBaseUrl),
-                this.Dispatcher,
-                this.ErrorHandler);
+            this.StartLoginCommand = new AsyncCommand(
+               async () => await this.ExecuteStartLoginCommand(),
+               () => !string.IsNullOrEmpty(this.ServerBaseUrl),
+               this.Dispatcher,
+               this.ErrorHandler);
 
             this.StartAuthViaCodeCommand = new AsyncCommand(
                 async () => await this.PerformBusyAsyncTask(this.ExecuteStartAuthViaCodeCommand),
