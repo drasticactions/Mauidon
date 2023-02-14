@@ -31,5 +31,10 @@ namespace Mauidon.Models
         /// Gets or sets the language setting.
         /// </summary>
         public LanguageSetting LanguageSetting { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to turn on timeline streams by default.
+        /// </summary>
+        public bool TurnOnTimelineStreams { get; set; } = true;
     }
 }

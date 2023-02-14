@@ -4,13 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 
 namespace Mauidon.WinUI.Tools
@@ -96,6 +100,56 @@ namespace Mauidon.WinUI.Tools
             }
 
             return ms;
+        }
+
+        /// <summary>
+        /// Find all ascendant elements of the specified element. This method can be chained with
+        /// LINQ calls to add additional filters or projections on top of the returned results.
+        /// <para>
+        /// This method is meant to provide extra flexibility in specific scenarios and it should not
+        /// be used when only the first item is being looked for. In those cases, use one of the
+        /// available <see cref="FindAscendant{T}(DependencyObject)"/> overloads instead, which will
+        /// offer a more compact syntax as well as better performance in those cases.
+        /// </para>
+        /// </summary>
+        /// <param name="element">The root element.</param>
+        /// <returns>All the descendant <see cref="DependencyObject"/> instance from <paramref name="element"/>.</returns>
+        public static IEnumerable<DependencyObject> FindAscendants(this DependencyObject element)
+        {
+            while (true)
+            {
+                DependencyObject? parent = VisualTreeHelper.GetParent(element);
+
+                if (parent is null)
+                {
+                    yield break;
+                }
+
+                yield return parent;
+
+                element = parent;
+            }
+        }
+
+        /// <summary>
+        /// Determines if a rectangle intersects with another rectangle.
+        /// </summary>
+        /// <param name="rect1">The first rectangle to test.</param>
+        /// <param name="rect2">The second rectangle to test.</param>
+        /// <returns>This method returns <see langword="true"/> if there is any intersection, otherwise <see langword="false"/>.</returns>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IntersectsWith(this Rect rect1, Rect rect2)
+        {
+            if (rect1.IsEmpty || rect2.IsEmpty)
+            {
+                return false;
+            }
+
+            return (rect1.Left <= rect2.Right) &&
+                   (rect1.Right >= rect2.Left) &&
+                   (rect1.Top <= rect2.Bottom) &&
+                   (rect1.Bottom >= rect2.Top);
         }
 
         /// <summary>

@@ -3,7 +3,10 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Drastic.Modal;
+using Mauidon.Services;
+using Mauidon.ViewModels;
 using Mauidon.WinUI.Pages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +20,10 @@ namespace Mauidon.WinUI.Windows
     /// </summary>
     public sealed partial class MainWindow : WinUIEx.WindowEx
     {
+        private AuthorizationService authorizationService;
         private SettingsPage settingsPage;
+        private TimelineSplitViewPage publicTimelineSplitViewPage;
+        private bool isLoggedIn;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -25,10 +31,13 @@ namespace Mauidon.WinUI.Windows
         public MainWindow()
         {
             this.InitializeComponent();
-
+            this.authorizationService = Ioc.Default.GetService<AuthorizationService>()!;
+            this.isLoggedIn = this.authorizationService.DefaultClient?.IsLoggedIn ?? false;
             this.MainWindowGrid.DataContext = this;
 
             this.settingsPage = new SettingsPage(this);
+            this.publicTimelineSplitViewPage = new TimelineSplitViewPage(Ioc.Default.GetService<PublicTimelineViewModel>()!);
+            this.NavigationFrame.Content = this.publicTimelineSplitViewPage;
 
             this.ExtendsContentIntoAppTitleBar(true);
             this.SetTitleBar(this.AppTitleBar);

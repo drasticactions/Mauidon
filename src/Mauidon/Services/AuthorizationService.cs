@@ -2,9 +2,9 @@
 // Copyright (c) Drastic Actions. All rights reserved.
 // </copyright>
 
-using Drastic.Tools;
 using Mastonet;
 using Mastonet.Entities;
+using Mauidon.Events;
 using Mauidon.Models;
 
 namespace Mauidon.Services
@@ -15,7 +15,7 @@ namespace Mauidon.Services
     public class AuthorizationService
     {
         private string redirectUrl;
-
+        private MauidonClient defaultClient;
         private string hostUrl = string.Empty;
         private AppRegistration? appRegistration;
         private AuthenticationClient? authClient;
@@ -33,12 +33,20 @@ namespace Mauidon.Services
             this.databaseContext = database;
             this.browserService = browserService;
             this.redirectUrl = redirectUri;
+            this.defaultClient = this.GetDefaultClient();
         }
+
+        public event EventHandler<NewSignInEventArgs>? OnNewSignIn;
 
         /// <summary>
         /// Gets a value indicating whether gets a value indicating if the user needs to copy a code.
         /// </summary>
         public bool IsCodeAuth => this.redirectUrl == "urn:ietf:wg:oauth:2.0:oob";
+
+        /// <summary>
+        /// Gets the default Mauidon Client.
+        /// </summary>
+        public MauidonClient DefaultClient => this.defaultClient;
 
         /// <summary>
         /// Setup Login for Mastodon.
@@ -70,31 +78,47 @@ namespace Mauidon.Services
         }
 
         /// <summary>
-        /// Gets the default client async.
+        /// Login with existing Mauidon Account.
+        /// </summary>
+        /// <param name="mauidonAccount">Mauidon Account.</param>
+        /// <returns>New Mauidon Client.</returns>
+        public MauidonClient LoginWithMauidonAccount(MauidonAccount mauidonAccount)
+        {
+            var client = new MastodonClient(mauidonAccount.Instance, mauidonAccount.AccessToken);
+            this.defaultClient = new MauidonClient(client, mauidonAccount);
+            this.OnNewSignIn?.Invoke(this, new NewSignInEventArgs(this.defaultClient));
+            return this.defaultClient;
+        }
+
+        /// <summary>
+        /// Gets the default client.
         /// </summary>
         /// <returns>MauidonClient.</returns>
-        public async Task<MauidonClient> GetDefaultClientAsync()
+        public MauidonClient GetDefaultClient()
         {
+            MauidonClient mauidonClient;
             var account = this.databaseContext.MauidonAccounts!.FirstOrDefault(n => n.IsDefault);
             if (account is null)
             {
-                return await this.GetDefaultClientAsync();
+                mauidonClient = this.GenerateDefaultClient();
+            }
+            else
+            {
+                var client = new MastodonClient(account.Instance, account.AccessToken);
+                mauidonClient = new MauidonClient(client, account);
             }
 
-            var client = new MastodonClient(account.Instance, account.AccessToken);
-
-            return new MauidonClient(client, account);
+            this.defaultClient = mauidonClient;
+            return mauidonClient;
         }
 
         /// <summary>
         /// Generates the default client.
         /// </summary>
         /// <returns>Mastodon Client.</returns>
-        public async Task<MauidonClient> GenerateDefaultClientAsync()
+        public MauidonClient GenerateDefaultClient()
         {
-            var initAuthClient = new AuthenticationClient("mastodon.social");
-            var test = await initAuthClient.CreateApp("Mauidon", Scope.Read);
-            return new MauidonClient(new MastodonClient(test.Instance, string.Empty));
+            return new MauidonClient(new MastodonClient("mastodon.social", string.Empty));
         }
 
         private async Task<AppRegistration> GetAppRegistrationAsync(string serverBase)

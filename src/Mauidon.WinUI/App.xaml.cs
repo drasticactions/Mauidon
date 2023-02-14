@@ -42,6 +42,7 @@ namespace Mauidon.WinUI
              .AddSingleton<WindowService>()
              .AddSingleton<ApplicationSettingsService>()
              .AddSingleton<ThemeSelectorService>()
+             .AddSingleton<PublicTimelineViewModel>()
              .AddTransient<LoginViewModel>()
              .BuildServiceProvider());
 
