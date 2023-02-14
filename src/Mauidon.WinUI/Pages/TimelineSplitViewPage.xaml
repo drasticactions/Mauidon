@@ -13,26 +13,7 @@
     <SplitView DisplayMode="Inline" IsPaneOpen="True">
         <SplitView.Pane>
             <Grid>
-                <ListView ItemsSource="{x:Bind vm.Statuses, Mode=OneWay}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Status">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="5"/>
-                                </Grid.RowDefinitions>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border CornerRadius="5">
-                                        <toolit:ImageEx VerticalAlignment="Top" Height="50" Source="{Binding Account.AvatarUrl}"/>
-                                    </Border>
-                                </Grid>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+                <ListView ItemsSource="{x:Bind vm.Statuses, Mode=OneWay}" ItemTemplate="{StaticResource StatusTemplate}">
                 </ListView>
             </Grid>
         </SplitView.Pane>

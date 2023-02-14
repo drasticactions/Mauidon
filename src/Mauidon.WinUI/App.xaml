@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <ResourceDictionary Source="Toolkit/ImageEx.xaml"/>
+                <ResourceDictionary Source="Resources/MauidonTemplates.xaml"/>
                 <ResourceDictionary>
                     <!--Custom size margins-->
                     <Thickness x:Key="PageTitleMargin">0,0,12,7</Thickness>

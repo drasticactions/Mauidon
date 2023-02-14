@@ -26,12 +26,10 @@
 	  <None Remove="BaseWindow.xaml" />
 	  <None Remove="Pages\SettingsPage.xaml" />
 	  <None Remove="Pages\TimelineSplitViewPage.xaml" />
+	  <None Remove="Resources\MauidonTemplates.xaml" />
+	  <None Remove="Toolkit\ImageEx.xaml" />
 	  <None Remove="Windows\LoginModalWindow.xaml" />
 	  <None Remove="Windows\MainWindow.xaml" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Page Remove="Toolkit\ImageEx.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Include="Assets\LargeTile.scale-100.png" />
@@ -141,9 +139,14 @@
 	  <ProjectReference Include="..\Mauidon\Mauidon.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="Toolkit\ImageEx.xaml">
+	  <Page Update="Resources\MauidonTemplates.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
+	  </Page>
+	  <Page Update="Toolkit\ImageEx.xaml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	<ItemGroup>
 	  <Page Update="Pages\TimelineSplitViewPage.xaml">
